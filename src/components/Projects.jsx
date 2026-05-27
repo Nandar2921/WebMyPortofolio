@@ -46,7 +46,7 @@ const projects = [
     desc: "Portfolio pribadi dengan animasi modern dan UI elegan. Responsive design, dark mode, dan performa tinggi.",
     tech: ["React", "Framer Motion", "Tailwind", "Vite"],
     // 🔥 OTOMATIS ambil screenshot dari link web!
-    image: getScreenshotUrl("https://nurwahyu-portfolio.vercel.app"),
+    image: getScreenshotUrl("https://myportofolio-kappa-sage.vercel.app/"),
     github: "https://github.com/Nandar2921/WebMyPortofolio.git",
     demo: "https://myportofolio-kappa-sage.vercel.app/",
     features: [
