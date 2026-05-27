@@ -1,7 +1,24 @@
 import { motion } from "framer-motion";
-import { FaUserGraduate, FaLaptopCode, FaRocket, FaGlobe, FaBriefcase, FaHeart } from "react-icons/fa";
+import { useState, useEffect } from "react";
+import { FaUserGraduate, FaLaptopCode, FaBriefcase, FaHeart } from "react-icons/fa";
 
 export default function About() {
+  const [settings, setSettings] = useState({
+    name: 'Nur Wahyu Nandarudin',
+    location: 'Indonesia',
+    email: 'nurwahyunandarudin21@gmail.com',
+    bio: 'Mahasiswa Informatika Universitas Muhammadiyah Semarang yang passionate dalam pengembangan web modern.'
+  });
+
+  // Load settings dari localStorage
+  useEffect(() => {
+    const savedSettings = localStorage.getItem('portfolioSettings');
+    if (savedSettings) {
+      const parsed = JSON.parse(savedSettings);
+      setSettings(parsed);
+    }
+  }, []);
+
   return (
     <section id="about" className="max-w-7xl mx-auto px-6 md:px-10 py-10">
       <motion.div
@@ -18,23 +35,18 @@ export default function About() {
         </div>
 
         <p className="text-zinc-300 leading-relaxed text-lg">
-          Saya <span className="text-purple-400 font-semibold">Nur Wahyu Nandarudin</span>, mahasiswa 
+          Saya <span className="text-purple-400 font-semibold">{settings.name}</span>, mahasiswa 
           <span className="text-cyan-400 font-semibold"> Informatika Universitas Muhammadiyah Semarang</span>. 
           Saya sangat passionate dalam dunia <span className="text-purple-400">pengembangan web modern</span> dan 
           <span className="text-cyan-400"> desain digital</span>.
         </p>
 
         <p className="text-zinc-400 leading-relaxed text-lg mt-4">
-          Saat ini saya sedang aktif membangun <span className="text-purple-400">portfolio proyek-proyek nyata </span> 
-          sebagai langkah awal untuk memulai karir sebagai 
-          <span className="text-cyan-400"> Web Developer Freelance</span>. Saya telah terdaftar di platform 
-          internasional seperti <span className="text-purple-400">Fiverr</span> dan 
-          <span className="text-cyan-400"> Upwork</span>, serta terus mengembangkan skill dan jaringan profesional 
-          di LinkedIn.
+          {settings.bio}
         </p>
 
         <p className="text-zinc-400 leading-relaxed text-lg mt-4">
-          Visi jangka panjang saya adalah <span className="text-purple-400 font-semibold">membangun startup teknologi </span> 
+          Visi jangka panjang saya adalah <span className="text-purple-400 font-semibold">membangun startup teknologi</span> 
           sendiri yang berfokus pada solusi digital untuk pasar lokal dan global. Saya percaya bahwa 
           <span className="text-cyan-400"> ketekunan dan semangat belajar</span> adalah kunci untuk mencapai impian tersebut.
         </p>
@@ -82,27 +94,27 @@ export default function About() {
           </div>
         </div>
 
-        {/* CONTACT INFO */}
+        {/* CONTACT INFO - PAKAI DATA DARI SETTINGS */}
         <div className="grid md:grid-cols-3 gap-5 mt-8 pt-8 border-t border-white/10 text-zinc-300">
           <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-all duration-300">
             <span className="text-2xl">👤</span>
             <div>
               <div className="text-xs text-zinc-500">Full Name</div>
-              <span className="text-sm">Nur Wahyu Nandarudin</span>
+              <span className="text-sm">{settings.name}</span>
             </div>
           </div>
           <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-all duration-300">
             <span className="text-2xl">📍</span>
             <div>
               <div className="text-xs text-zinc-500">Location</div>
-              <span className="text-sm">Indonesia</span>
+              <span className="text-sm">{settings.location}</span>
             </div>
           </div>
           <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-all duration-300">
             <span className="text-2xl">📧</span>
             <div>
               <div className="text-xs text-zinc-500">Email</div>
-              <span className="text-sm">nurwahyunandarudin21@gmail.com</span>
+              <span className="text-sm">{settings.email}</span>
             </div>
           </div>
         </div>

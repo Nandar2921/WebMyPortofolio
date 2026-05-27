@@ -47,7 +47,7 @@ const projects = [
     tech: ["React", "Framer Motion", "Tailwind", "Vite"],
     // 🔥 OTOMATIS ambil screenshot dari link web!
     image: getScreenshotUrl("https://myportofolio-kappa-sage.vercel.app/"),
-    github: "https://github.com/Nandar2921/WebMyPortofolio.git",
+    github: "https://github.com/Nandar2921/WebMyPortofolio",
     demo: "https://myportofolio-kappa-sage.vercel.app/",
     features: [
       "Smooth Animations",
@@ -233,7 +233,7 @@ export default function Projects() {
 
               {selectedProject.features && (
                 <div className="mb-6">
-                  <h3 className="text-xl font-semibold mb-3 text-purple-400">✨ Key Features</h3>
+                  <h3 className="text-xl font-semibold mb-3 text-purple-400"> Key Features</h3>
                   <ul className="grid md:grid-cols-2 gap-2">
                     {selectedProject.features.map((feature, idx) => (
                       <li key={idx} className="flex items-center gap-2 text-zinc-400">

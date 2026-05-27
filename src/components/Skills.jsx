@@ -1,67 +1,85 @@
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 import { FaHtml5, FaCss3Alt, FaJs, FaReact, FaFigma, FaPaintBrush } from "react-icons/fa";
-import { SiTailwindcss } from "react-icons/si";
-
-const skills = [
-  { 
-    name: "HTML", 
-    level: "90%", 
-    description: "Struktur web semantik dan SEO-friendly",
-    icon: <FaHtml5 className="text-orange-500 text-3xl" />,
-    color: "from-orange-500 to-red-500",
-    progress: 90
-  },
-  { 
-    name: "CSS / Tailwind", 
-    level: "85%", 
-    description: "Styling modern, responsive, dan utility-first CSS",
-    icon: <FaCss3Alt className="text-blue-500 text-3xl" />,
-    color: "from-blue-500 to-cyan-500",
-    progress: 85
-  },
-  { 
-    name: "JavaScript", 
-    level: "80%", 
-    description: "ES6+, DOM manipulation, dan logic programming",
-    icon: <FaJs className="text-yellow-500 text-3xl" />,
-    color: "from-yellow-500 to-orange-500",
-    progress: 80
-  },
-  { 
-    name: "React.js", 
-    level: "82%", 
-    description: "Hooks, state management, dan component architecture",
-    icon: <FaReact className="text-cyan-500 text-3xl" />,
-    color: "from-cyan-500 to-blue-500",
-    progress: 82
-  },
-  { 
-    name: "UI / UX Design", 
-    level: "75%", 
-    description: "Wireframing, prototyping, dan user research dasar",
-    icon: <FaFigma className="text-pink-500 text-3xl" />,
-    color: "from-purple-500 to-pink-500",
-    progress: 75
-  },
-  { 
-    name: "Canva / Design", 
-    level: "88%", 
-    description: "Desain grafis untuk konten media sosial & presentasi",
-    icon: <FaPaintBrush className="text-teal-500 text-3xl" />,
-    color: "from-green-500 to-teal-500",
-    progress: 88
-  },
-];
-
-// Skill categories yang sedang dipelajari (coming soon)
-const learningSkills = [
-  { name: "Next.js", icon: "⚡", color: "text-gray-400" },
-  { name: "TypeScript", icon: "📘", color: "text-blue-400" },
-  { name: "Node.js", icon: "🟢", color: "text-green-400" },
-  { name: "MongoDB", icon: "🍃", color: "text-green-500" },
-];
 
 export default function Skills() {
+  const [settings, setSettings] = useState({
+    htmlSkill: 90,
+    cssSkill: 85,
+    jsSkill: 80,
+    reactSkill: 82,
+    uiuxSkill: 75,
+    designSkill: 88
+  });
+
+  // Load settings dari localStorage
+  useEffect(() => {
+    const savedSettings = localStorage.getItem('portfolioSettings');
+    if (savedSettings) {
+      const parsed = JSON.parse(savedSettings);
+      setSettings(parsed);
+    }
+  }, []);
+
+  const skills = [
+    { 
+      name: "HTML", 
+      level: `${settings.htmlSkill}%`, 
+      description: "Struktur web semantik dan SEO-friendly",
+      icon: <FaHtml5 className="text-orange-500 text-3xl" />,
+      color: "from-orange-500 to-red-500",
+      progress: settings.htmlSkill
+    },
+    { 
+      name: "CSS / Tailwind", 
+      level: `${settings.cssSkill}%`, 
+      description: "Styling modern, responsive, dan utility-first CSS",
+      icon: <FaCss3Alt className="text-blue-500 text-3xl" />,
+      color: "from-blue-500 to-cyan-500",
+      progress: settings.cssSkill
+    },
+    { 
+      name: "JavaScript", 
+      level: `${settings.jsSkill}%`, 
+      description: "ES6+, DOM manipulation, dan logic programming",
+      icon: <FaJs className="text-yellow-500 text-3xl" />,
+      color: "from-yellow-500 to-orange-500",
+      progress: settings.jsSkill
+    },
+    { 
+      name: "React.js", 
+      level: `${settings.reactSkill}%`, 
+      description: "Hooks, state management, dan component architecture",
+      icon: <FaReact className="text-cyan-500 text-3xl" />,
+      color: "from-cyan-500 to-blue-500",
+      progress: settings.reactSkill
+    },
+    { 
+      name: "UI / UX Design", 
+      level: `${settings.uiuxSkill}%`, 
+      description: "Wireframing, prototyping, dan user research dasar",
+      icon: <FaFigma className="text-pink-500 text-3xl" />,
+      color: "from-purple-500 to-pink-500",
+      progress: settings.uiuxSkill
+    },
+    { 
+      name: "Canva / Design", 
+      level: `${settings.designSkill}%`, 
+      description: "Desain grafis untuk konten media sosial & presentasi",
+      icon: <FaPaintBrush className="text-teal-500 text-3xl" />,
+      color: "from-green-500 to-teal-500",
+      progress: settings.designSkill
+    },
+  ];
+
+  // Skill categories yang sedang dipelajari (coming soon)
+  const learningSkills = [
+    { name: "Next.js", icon: "⚡", color: "text-gray-400" },
+    { name: "TypeScript", icon: "📘", color: "text-blue-400" },
+    { name: "Node.js", icon: "🟢", color: "text-green-400" },
+    { name: "MongoDB", icon: "🍃", color: "text-green-500" },
+  ];
+
   return (
     <section id="skills" className="max-w-7xl mx-auto px-6 md:px-10 py-10">
       <motion.div

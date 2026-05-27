@@ -1,11 +1,31 @@
 import { motion, useMotionValue, useTransform } from "framer-motion";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import profile from "../assets/profile.jpg";
 import TypewriterText from "./TypewriterText";
 import { FaInstagram, FaGithub, FaTiktok, FaWhatsapp } from "react-icons/fa";
 import { HiOutlineMail } from "react-icons/hi";
 
 export default function Hero() {
+  const [settings, setSettings] = useState({
+    name: 'Nur Wahyu Nandarudin',
+    title: 'Web Developer & Content Creator',
+    bio: 'Mahasiswa Informatika Universitas Muhammadiyah Semarang. Saat ini sedang aktif membangun portfolio dan mencari pengalaman sebagai Web Developer Freelance.',
+    instagram: 'https://instagram.com/n_wahyu_n',
+    github: 'https://github.com/Nandar2921',
+    tiktok: 'https://tiktok.com/@santuy.217',
+    whatsapp: 'https://wa.me/6288980045976',
+    email: 'nurwahyunandarudin21@gmail.com'
+  });
+
+  // Load settings dari localStorage
+  useEffect(() => {
+    const savedSettings = localStorage.getItem('portfolioSettings');
+    if (savedSettings) {
+      const parsed = JSON.parse(savedSettings);
+      setSettings(parsed);
+    }
+  }, []);
+
   const containerRef = useRef(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -27,14 +47,13 @@ export default function Hero() {
   }, [mouseX, mouseY]);
 
   const socialLinks = [
-    { Icon: FaInstagram, url: "https://www.instagram.com/n_wahyu_n", username: "@n_wahyu_n", color: "hover:text-pink-500" },
-    { Icon: FaGithub, url: "https://github.com/Nandar2921", username: "Nandar2921", color: "hover:text-gray-300" },
-    { Icon: FaTiktok, url: "https://www.tiktok.com/@santuy.217", username: "@santuy.217", color: "hover:text-white" },
-    { Icon: FaWhatsapp, url: "https://wa.me/6288980045976", username: "+62 889-8004-5976", color: "hover:text-green-400" },
-    { Icon: HiOutlineMail, url: "mailto:nurwahyunandarudin21@gmail.com", username: "nurwahyunandarudin21@gmail.com", color: "hover:text-purple-400" },
+    { Icon: FaInstagram, url: settings.instagram, username: "@n_wahyu_n", color: "hover:text-pink-500" },
+    { Icon: FaGithub, url: settings.github, username: "Nandar2921", color: "hover:text-gray-300" },
+    { Icon: FaTiktok, url: settings.tiktok, username: "@santuy.217", color: "hover:text-white" },
+    { Icon: FaWhatsapp, url: settings.whatsapp, username: "+62 889-8004-5976", color: "hover:text-green-400" },
+    { Icon: HiOutlineMail, url: `mailto:${settings.email}`, username: settings.email, color: "hover:text-purple-400" },
   ];
 
-  // Partikel background
   const particles = Array.from({ length: 20 }, (_, i) => ({
     id: i,
     x: Math.random() * 100,
@@ -47,36 +66,20 @@ export default function Hero() {
   return (
     <section ref={containerRef} id="home" className="relative max-w-7xl mx-auto px-6 md:px-10 pt-32 lg:pt-40 min-h-screen flex items-center overflow-hidden">
       
-      {/* BACKGROUND PARTIKEL */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {particles.map((p) => (
           <motion.div
             key={p.id}
             className="absolute rounded-full bg-gradient-to-r from-purple-500/20 to-cyan-500/20"
-            style={{
-              left: `${p.x}%`,
-              top: `${p.y}%`,
-              width: p.size,
-              height: p.size,
-            }}
-            animate={{
-              y: [0, -20, 0, 20, 0],
-              x: [0, 15, 0, -15, 0],
-              opacity: [0.1, 0.5, 0.1],
-            }}
-            transition={{
-              duration: p.duration,
-              repeat: Infinity,
-              delay: p.delay,
-              ease: "easeInOut",
-            }}
+            style={{ left: `${p.x}%`, top: `${p.y}%`, width: p.size, height: p.size }}
+            animate={{ y: [0, -20, 0, 20, 0], x: [0, 15, 0, -15, 0], opacity: [0.1, 0.5, 0.1] }}
+            transition={{ duration: p.duration, repeat: Infinity, delay: p.delay, ease: "easeInOut" }}
           />
         ))}
       </div>
 
       <div className="grid lg:grid-cols-2 gap-12 items-center relative z-10 w-full">
         
-        {/* KIRI - TEKS */}
         <div>
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -98,10 +101,10 @@ export default function Hero() {
             className="text-6xl md:text-7xl lg:text-8xl font-black leading-tight"
           >
             <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
-              Nur
+              {settings.name.split(" ")[0]}
             </span>{" "}
             <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-              Wahyu
+              {settings.name.split(" ")[1] || "Wahyu"}
             </span>
           </motion.h1>
 
@@ -120,12 +123,9 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.6 }}
             className="text-zinc-400 mt-6 leading-relaxed text-lg max-w-xl"
           >
-            Mahasiswa Informatika Universitas Muhammadiyah Semarang. Saat ini sedang 
-            aktif membangun portfolio dan mencari pengalaman sebagai <span className="text-purple-400">Web Developer Freelance</span>. 
-            Saya terdaftar di <span className="text-cyan-400">Fiverr</span> & <span className="text-cyan-400">Upwork</span>, dan sedang memperluas koneksi di LinkedIn.
+            {settings.bio}
           </motion.p>
 
-          {/* STATUS CARD - REALISTIS */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -160,10 +160,7 @@ export default function Hero() {
               onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}
               className="relative overflow-hidden group bg-gradient-to-r from-purple-500 to-cyan-500 px-8 py-4 rounded-2xl font-bold shadow-lg shadow-purple-500/30 cursor-pointer"
             >
-              <span className="relative z-10 flex items-center gap-2">
-                ✨ See My Projects
-                <motion.span animate={{ x: [0, 5, 0] }} transition={{ repeat: Infinity, duration: 1 }}>→</motion.span>
-              </span>
+              <span className="relative z-10 flex items-center gap-2"> See My Projects →</span>
             </motion.button>
             
             <motion.button 
@@ -176,7 +173,6 @@ export default function Hero() {
             </motion.button>
           </motion.div>
 
-          {/* SOCIAL ICONS */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -202,17 +198,15 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* KANAN - FOTO PROFIL */}
+        {/* Kanan - Foto Profil (tetap sama seperti sebelumnya) */}
         <div className="relative flex justify-center items-center">
+          {/* ... kode foto profil tetap sama ... */}
           <div className="relative group" style={{ perspective: "1500px" }}>
-            
             <motion.div
               animate={{ scale: [1, 1.3, 1], opacity: [0.2, 0.5, 0.2] }}
               transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
               className="absolute -inset-10 rounded-full bg-gradient-to-r from-purple-600/20 via-pink-500/20 to-cyan-600/20 blur-2xl"
             />
-
-            {/* ORBIT RINGS */}
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ repeat: Infinity, duration: 15, ease: "linear" }}
@@ -231,7 +225,6 @@ export default function Hero() {
               className="absolute -inset-20 rounded-full border border-dashed border-pink-500/30"
             />
 
-            {/* FOTO 3D */}
             <motion.div
               style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
@@ -255,7 +248,7 @@ export default function Hero() {
               >
                 <img
                   src={profile}
-                  alt="Nur Wahyu Nandarudin"
+                  alt={settings.name}
                   className="relative w-[260px] h-[260px] md:w-[380px] md:h-[380px] object-cover rounded-full shadow-2xl transition-all duration-500 group-hover:scale-105"
                   style={{
                     border: "4px solid transparent",
@@ -269,7 +262,6 @@ export default function Hero() {
 
               <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-white/15 via-transparent to-white/5 pointer-events-none" />
 
-              {/* BADGE */}
               <motion.div
                 initial={{ scale: 0, rotate: -180 }}
                 animate={{ scale: 1, rotate: 0 }}
@@ -296,7 +288,6 @@ export default function Hero() {
             </motion.div>
           </div>
 
-          {/* STATUS CARD */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
@@ -317,7 +308,6 @@ export default function Hero() {
             </div>
           </motion.div>
 
-          {/* MOTTO BADGE */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             animate={{ opacity: 1, x: 0 }}
@@ -329,7 +319,6 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* SCROLL INDICATOR */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

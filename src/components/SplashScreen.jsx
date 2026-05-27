@@ -1,108 +1,74 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export default function SplashScreen({ onComplete, audioRef }) {
   const [progress, setProgress] = useState(0);
-  const [musicPlaying, setMusicPlaying] = useState(false);
+  const [started, setStarted] = useState(false);
+  const [voicePlaying, setVoicePlaying] = useState(false);
+  const voiceEnRef = useRef(null);
+  const voiceIdRef = useRef(null);
 
-  // Fungsi untuk memulai musik
-  const startMusic = () => {
-    if (audioRef?.current && !musicPlaying) {
-      audioRef.current.volume = 0.5;
-      audioRef.current.currentTime = 0;
-      
-      const playPromise = audioRef.current.play();
-      
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            console.log("✅ Music started successfully!");
-            setMusicPlaying(true);
-          })
-          .catch(error => {
-            console.log("⚠️ Autoplay blocked:", error);
-            // Coba lagi setiap 1 detik
-            const retryInterval = setInterval(() => {
-              if (audioRef?.current && !musicPlaying) {
-                audioRef.current.play()
-                  .then(() => {
-                    console.log("✅ Music started on retry!");
-                    setMusicPlaying(true);
-                    clearInterval(retryInterval);
-                  })
-                  .catch(() => {});
-              }
-            }, 1000);
-            
-            setTimeout(() => clearInterval(retryInterval), 10000);
-          });
-      }
-    }
-  };
-
-  // Coba autoplay saat komponen mount
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      startMusic();
-    }, 300);
+  const startEverything = () => {
+    if (started) return;
+    setStarted(true);
     
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Progress bar
-  useEffect(() => {
-    const duration = 3000;
+    console.log("🎵 Starting music and premium voice AI...");
+    
+    // 1. MULAI MUSIK - volume dinaikin dikit (0.35)
+    if (audioRef?.current) {
+      audioRef.current.volume = 0.35;  // Dari 0.2 jadi 0.35
+      audioRef.current.currentTime = 0;
+      audioRef.current.play()
+        .then(() => console.log("✅ Music playing!"))
+        .catch(err => console.log("Music error:", err));
+    }
+    
+    // 2. MULAI SUARA PREMIUM
+    voiceEnRef.current = new Audio('SuaraAi 1.mp3');
+    voiceIdRef.current = new Audio('SuaraAi 2.mp3');
+    
+    voiceEnRef.current.volume = 0.9;   // Volume AI sedikit diturunin (dari 1 jadi 0.9)
+    voiceIdRef.current.volume = 0.9;
+    
+    voiceEnRef.current.onended = () => {
+      console.log("✅ English voice finished, playing Indonesian...");
+      voiceIdRef.current.play();
+    };
+    
+    voiceEnRef.current.onplay = () => console.log("✅ Premium English voice started!");
+    voiceIdRef.current.onplay = () => console.log("✅ Premium Indonesian voice started!");
+    
+    voiceEnRef.current.play().catch(e => console.log("Voice play error:", e));
+    setVoicePlaying(true);
+    
+    // 3. PROGRESS BAR
+    let step = 0;
+    const duration = 10000;
     const intervalTime = 30;
     const steps = duration / intervalTime;
-    let step = 0;
-    let interval = null;
-
-    const startProgress = () => {
-      if (interval) clearInterval(interval);
+    
+    const interval = setInterval(() => {
+      step++;
+      const newProgress = Math.min(100, Math.floor((step / steps) * 100));
+      setProgress(newProgress);
       
-      interval = setInterval(() => {
-        step++;
-        const newProgress = Math.min(100, Math.floor((step / steps) * 100));
-        setProgress(newProgress);
-        
-        if (newProgress >= 100) {
-          clearInterval(interval);
-          setTimeout(() => {
-            onComplete();
-          }, 500);
-        }
-      }, intervalTime);
-    };
-
-    if (musicPlaying) {
-      startProgress();
-    } else {
-      const waitTimer = setTimeout(() => {
-        if (!musicPlaying) {
-          console.log("⏰ Timeout waiting for music, continuing anyway...");
-          startProgress();
-        }
-      }, 5000);
-      
-      return () => clearTimeout(waitTimer);
-    }
-
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [musicPlaying, onComplete]);
+      if (newProgress >= 100) {
+        clearInterval(interval);
+        setTimeout(() => {
+          onComplete();
+        }, 500);
+      }
+    }, intervalTime);
+  };
 
   return (
     <AnimatePresence>
       <motion.div
         initial={{ opacity: 1 }}
-        exit={{ opacity: 0, y: -100 }}
-        transition={{ duration: 0.8, ease: "easeInOut" }}
-        className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-gradient-to-br from-[#050816] via-purple-900/50 to-[#050816]"
-        onClick={startMusic}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-gradient-to-br from-[#050816] to-purple-900"
+        onClick={startEverything}
       >
-        {/* HAPUS <audio> element disini! Karena sudah ada di App.jsx */}
-
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500/30 rounded-full blur-3xl animate-pulse" />
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-cyan-500/30 rounded-full blur-3xl animate-pulse delay-1000" />
@@ -156,15 +122,13 @@ export default function SplashScreen({ onComplete, audioRef }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1, duration: 0.6 }}
-            className="mt-10 w-56 md:w-72"
+            className="mt-10 w-64 md:w-80"
           >
             <div className="flex justify-between text-xs text-zinc-500 mb-2">
-              <span>
-                {musicPlaying ? "Loading experience" : "Waiting for music..."}
-              </span>
+              <span>Loading experience</span>
               <span>{progress}%</span>
             </div>
-            <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+            <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
               <motion.div
                 className="h-full bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full"
                 initial={{ width: 0 }}
@@ -194,29 +158,31 @@ export default function SplashScreen({ onComplete, audioRef }) {
             ))}
           </motion.div>
 
-          {!musicPlaying && (
+          {!started && (
             <motion.button
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 1.5 }}
-              onClick={startMusic}
-              className="mt-6 px-6 py-3 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full text-white text-sm font-semibold hover:scale-105 transition shadow-lg"
+              onClick={startEverything}
+              className="mt-6 px-8 py-4 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full text-white font-bold text-lg hover:scale-105 transition shadow-lg"
             >
-              🎵 Click to Start Music
+              🎧 ENTER PORTFOLIO
             </motion.button>
           )}
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.5 }}
-            className="mt-6 text-zinc-600 text-[10px] flex items-center justify-center gap-1"
-          >
-            <span className={`${musicPlaying ? 'animate-pulse text-green-400' : 'text-zinc-500'}`}>
-              🎵
-            </span>
-            {musicPlaying ? 'Background music playing' : 'Click anywhere to start music'}
-          </motion.p>
+          {started && progress < 45 && (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="mt-4 text-purple-400/60 text-[10px] flex items-center justify-center gap-1"
+            >
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-purple-500"></span>
+              </span>
+              🎙️ Welome
+            </motion.p>
+          )}
         </div>
 
         <motion.p

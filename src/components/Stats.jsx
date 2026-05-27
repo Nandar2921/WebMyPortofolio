@@ -1,42 +1,59 @@
 import { motion } from "framer-motion";
-import { FaRocket, FaCode, FaGraduationCap, FaHeart, FaBriefcase, FaChartLine } from "react-icons/fa";
-
-const stats = [
-  { 
-    icon: <FaRocket />, 
-    value: "3+", 
-    label: "Projects Built", 
-    description: "Proyek portfolio yang selesai",
-    color: "text-purple-400",
-    bg: "from-purple-500/20 to-pink-500/20"
-  },
-  { 
-    icon: <FaCode />, 
-    value: "500+", 
-    label: "Hours of Code", 
-    description: "Total waktu belajar & coding",
-    color: "text-cyan-400",
-    bg: "from-cyan-500/20 to-blue-500/20"
-  },
-  { 
-    icon: <FaGraduationCap />, 
-    value: "4th", 
-    label: "Semester", 
-    description: "Mahasiswa Informatika aktif",
-    color: "text-green-400",
-    bg: "from-green-500/20 to-emerald-500/20"
-  },
-  { 
-    icon: <FaHeart />, 
-    value: "100%", 
-    label: "Commitment", 
-    description: "Semangat belajar & berkembang",
-    color: "text-pink-400",
-    bg: "from-pink-500/20 to-rose-500/20"
-  },
-];
+import { useState, useEffect } from "react";
+import { FaRocket, FaCode, FaGraduationCap, FaHeart } from "react-icons/fa";
 
 export default function Stats() {
+  const [settings, setSettings] = useState({
+    projectsCount: '3+',
+    hoursCode: '500+',
+    semester: '4th',
+    commitment: '100%'
+  });
+
+  // Load settings dari localStorage
+  useEffect(() => {
+    const savedSettings = localStorage.getItem('portfolioSettings');
+    if (savedSettings) {
+      const parsed = JSON.parse(savedSettings);
+      setSettings(parsed);
+    }
+  }, []);
+
+  const stats = [
+    { 
+      icon: <FaRocket />, 
+      value: settings.projectsCount, 
+      label: "Projects Built", 
+      description: "Proyek portfolio yang selesai",
+      color: "text-purple-400",
+      bg: "from-purple-500/20 to-pink-500/20"
+    },
+    { 
+      icon: <FaCode />, 
+      value: settings.hoursCode, 
+      label: "Hours of Code", 
+      description: "Total waktu belajar & coding",
+      color: "text-cyan-400",
+      bg: "from-cyan-500/20 to-blue-500/20"
+    },
+    { 
+      icon: <FaGraduationCap />, 
+      value: settings.semester, 
+      label: "Semester", 
+      description: "Mahasiswa Informatika aktif",
+      color: "text-green-400",
+      bg: "from-green-500/20 to-emerald-500/20"
+    },
+    { 
+      icon: <FaHeart />, 
+      value: settings.commitment, 
+      label: "Commitment", 
+      description: "Semangat belajar & berkembang",
+      color: "text-pink-400",
+      bg: "from-pink-500/20 to-rose-500/20"
+    },
+  ];
+
   return (
     <section className="max-w-7xl mx-auto px-6 md:px-10 py-28">
       <motion.div
@@ -82,7 +99,7 @@ export default function Stats() {
         <p className="text-zinc-500 text-sm italic">
           "Bukan tentang seberapa hebat sekarang, tapi tentang seberapa konsisten kita belajar dan berkembang."
         </p>
-        <p className="text-purple-400 text-xs mt-2">- Masih dalam perjalanan menjadi lebih baik setiap hari ✨</p>
+        <p className="text-purple-400 text-xs mt-2">- Masih dalam perjalanan menjadi lebih baik setiap hari </p>
       </motion.div>
     </section>
   );

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 const texts = [
-  "Welcome to my portfolio! ✨",
+  "Welcome to my portfolio! ",
   "Web Developer 💻",
   "Content Creator 🎬",
   "Let's create something amazing! 🚀",

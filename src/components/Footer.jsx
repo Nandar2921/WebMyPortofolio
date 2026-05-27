@@ -11,7 +11,7 @@ export default function Footer() {
         transition={{ duration: 0.5 }}
       >
         <p>© {year} Nur Wahyu Portfolio | Built with React + Tailwind + Framer Motion</p>
-        <p className="text-sm mt-2 text-zinc-600">✨ Let's create something amazing together ✨</p>
+        <p className="text-sm mt-2 text-zinc-600"> Let's create something amazing together </p>
       </motion.div>
     </footer>
   );
