@@ -47,8 +47,8 @@ const projects = [
     tech: ["React", "Framer Motion", "Tailwind", "Vite"],
     // 🔥 OTOMATIS ambil screenshot dari link web!
     image: getScreenshotUrl("https://nurwahyu-portfolio.vercel.app"),
-    github: "https://github.com/Nandar2921/portfolio",
-    demo: "https://nurwahyu-portfolio.vercel.app",
+    github: "https://github.com/Nandar2921/WebMyPortofolio.git",
+    demo: "https://myportofolio-kappa-sage.vercel.app/",
     features: [
       "Smooth Animations",
       "Dark/Light Mode",
