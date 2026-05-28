@@ -1,14 +1,15 @@
 // src/firebase.js
 import { initializeApp } from 'firebase/app';
-import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
+import { getFirestore } from 'firebase/firestore';
+
 
 const firebaseConfig = {
-  apiKey: "AIzaSyABdGrR7ZdTMlyrVd3wEssO-eUO_3qCJ6U",
-  authDomain: "portfolio-db-56e3a.firebaseapp.com",
-  projectId: "portfolio-db-56e3a",
-  storageBucket: "portfolio-db-56e3a.firebasestorage.app",
-  messagingSenderId: "426328801796",
-  appId: "1:426328801796:web:67391e9f0e629c76e9eb51"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 // Initialize Firebase
