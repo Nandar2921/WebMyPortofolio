@@ -1,62 +1,44 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 
 export default function SplashScreen({ onComplete, audioRef }) {
   const [progress, setProgress] = useState(0);
   const [started, setStarted] = useState(false);
-  const [voicePlaying, setVoicePlaying] = useState(false);
   const voiceEnRef = useRef(null);
   const voiceIdRef = useRef(null);
 
   const startEverything = () => {
     if (started) return;
     setStarted(true);
-    
-    console.log("🎵 Starting music and premium voice AI...");
-    
-    // 1. MULAI MUSIK - volume dinaikin dikit (0.35)
+
+    // Mulai musik
     if (audioRef?.current) {
-      audioRef.current.volume = 0.35;  // Dari 0.2 jadi 0.35
+      audioRef.current.volume = 0.35;
       audioRef.current.currentTime = 0;
-      audioRef.current.play()
-        .then(() => console.log("✅ Music playing!"))
-        .catch(err => console.log("Music error:", err));
+      audioRef.current.play().catch((err) => console.log("Music error:", err));
     }
-    
-    // 2. MULAI SUARA PREMIUM
+
+    // Mulai voice
     voiceEnRef.current = new Audio('SuaraAi 1.mp3');
     voiceIdRef.current = new Audio('SuaraAi 2.mp3');
-    
-    voiceEnRef.current.volume = 0.9;   // Volume AI sedikit diturunin (dari 1 jadi 0.9)
+    voiceEnRef.current.volume = 0.9;
     voiceIdRef.current.volume = 0.9;
-    
-    voiceEnRef.current.onended = () => {
-      console.log("✅ English voice finished, playing Indonesian...");
-      voiceIdRef.current.play();
-    };
-    
-    voiceEnRef.current.onplay = () => console.log("✅ Premium English voice started!");
-    voiceIdRef.current.onplay = () => console.log("✅ Premium Indonesian voice started!");
-    
-    voiceEnRef.current.play().catch(e => console.log("Voice play error:", e));
-    setVoicePlaying(true);
-    
-    // 3. PROGRESS BAR
+    voiceEnRef.current.onended = () => voiceIdRef.current.play();
+    voiceEnRef.current.play().catch((e) => console.log("Voice error:", e));
+
+    // Progress bar
     let step = 0;
     const duration = 10000;
     const intervalTime = 30;
     const steps = duration / intervalTime;
-    
+
     const interval = setInterval(() => {
       step++;
       const newProgress = Math.min(100, Math.floor((step / steps) * 100));
       setProgress(newProgress);
-      
       if (newProgress >= 100) {
         clearInterval(interval);
-        setTimeout(() => {
-          onComplete();
-        }, 500);
+        setTimeout(() => onComplete(), 500);
       }
     }, intervalTime);
   };
@@ -94,12 +76,8 @@ export default function SplashScreen({ onComplete, audioRef }) {
             <h1 className="text-3xl md:text-5xl font-black mb-3 bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
               Welcome to My Portfolio
             </h1>
-            <p className="text-zinc-300 text-lg md:text-xl mb-2">
-              Nur Wahyu Nandarudin
-            </p>
-            <p className="text-purple-400 text-sm md:text-base">
-              Web Developer & Content Creator
-            </p>
+            <p className="text-zinc-300 text-lg md:text-xl mb-2">Nur Wahyu Nandarudin</p>
+            <p className="text-purple-400 text-sm md:text-base">Web Developer & Content Creator</p>
           </motion.div>
 
           <motion.div
@@ -112,7 +90,7 @@ export default function SplashScreen({ onComplete, audioRef }) {
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.8, duration: 0.6 }}
+            transition={{ delay: 0.8 }}
             className="text-zinc-500 text-xs md:text-sm italic max-w-md mx-auto"
           >
             "Coding is my passion, creativity is my weapon"
@@ -121,7 +99,7 @@ export default function SplashScreen({ onComplete, audioRef }) {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1, duration: 0.6 }}
+            transition={{ delay: 1 }}
             className="mt-10 w-64 md:w-80"
           >
             <div className="flex justify-between text-xs text-zinc-500 mb-2">
@@ -148,11 +126,7 @@ export default function SplashScreen({ onComplete, audioRef }) {
               <motion.div
                 key={i}
                 animate={{ y: [0, -6, 0] }}
-                transition={{
-                  repeat: Infinity,
-                  duration: 0.6,
-                  delay: i * 0.15,
-                }}
+                transition={{ repeat: Infinity, duration: 0.6, delay: i * 0.15 }}
                 className="w-1.5 h-1.5 bg-purple-400 rounded-full"
               />
             ))}
@@ -170,6 +144,7 @@ export default function SplashScreen({ onComplete, audioRef }) {
             </motion.button>
           )}
 
+          {/* FIX: typo "Welome" → "Welcome" */}
           {started && progress < 45 && (
             <motion.p
               initial={{ opacity: 0 }}
@@ -180,7 +155,7 @@ export default function SplashScreen({ onComplete, audioRef }) {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-purple-500"></span>
               </span>
-              🎙️ Welome
+              🎙️ Welcome
             </motion.p>
           )}
         </div>

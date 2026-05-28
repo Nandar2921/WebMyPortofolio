@@ -14,22 +14,20 @@ export default function Hero() {
     github: 'https://github.com/Nandar2921',
     tiktok: 'https://tiktok.com/@santuy.217',
     whatsapp: 'https://wa.me/6288980045976',
-    email: 'nurwahyunandarudin21@gmail.com'
+    email: 'nurwahyunandarudin21@gmail.com',
   });
 
-  // Load settings dari localStorage
   useEffect(() => {
     const savedSettings = localStorage.getItem('portfolioSettings');
     if (savedSettings) {
       const parsed = JSON.parse(savedSettings);
-      setSettings(parsed);
+      setSettings((prev) => ({ ...prev, ...parsed }));
     }
   }, []);
 
   const containerRef = useRef(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-
   const rotateX = useTransform(mouseY, [-300, 300], [10, -10]);
   const rotateY = useTransform(mouseX, [-300, 300], [-10, 10]);
 
@@ -37,10 +35,8 @@ export default function Hero() {
     const handleMouseMove = (e) => {
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      mouseX.set(e.clientX - centerX);
-      mouseY.set(e.clientY - centerY);
+      mouseX.set(e.clientX - (rect.left + rect.width / 2));
+      mouseY.set(e.clientY - (rect.top + rect.height / 2));
     };
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
@@ -50,7 +46,7 @@ export default function Hero() {
     { Icon: FaInstagram, url: settings.instagram, username: "@n_wahyu_n", color: "hover:text-pink-500" },
     { Icon: FaGithub, url: settings.github, username: "Nandar2921", color: "hover:text-gray-300" },
     { Icon: FaTiktok, url: settings.tiktok, username: "@santuy.217", color: "hover:text-white" },
-    { Icon: FaWhatsapp, url: settings.whatsapp, username: "+62 889-8004-5976", color: "hover:text-green-400" },
+    { Icon: FaWhatsapp, url: settings.whatsapp, username: settings.phone, color: "hover:text-green-400" },
     { Icon: HiOutlineMail, url: `mailto:${settings.email}`, username: settings.email, color: "hover:text-purple-400" },
   ];
 
@@ -63,9 +59,17 @@ export default function Hero() {
     delay: Math.random() * 5,
   }));
 
+  // FIX: tampilkan nama lengkap dengan benar
+  const nameParts = settings.name.trim().split(" ");
+  const firstName = nameParts[0];
+  const restName = nameParts.slice(1).join(" ");
+
   return (
-    <section ref={containerRef} id="home" className="relative max-w-7xl mx-auto px-6 md:px-10 pt-32 lg:pt-40 min-h-screen flex items-center overflow-hidden">
-      
+    <section
+      ref={containerRef}
+      id="home"
+      className="relative max-w-7xl mx-auto px-6 md:px-10 pt-32 lg:pt-40 min-h-screen flex items-center overflow-hidden"
+    >
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {particles.map((p) => (
           <motion.div
@@ -79,7 +83,6 @@ export default function Hero() {
       </div>
 
       <div className="grid lg:grid-cols-2 gap-12 items-center relative z-10 w-full">
-        
         <div>
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -94,17 +97,18 @@ export default function Hero() {
             <span className="text-purple-300 text-sm font-semibold tracking-wider">OPEN FOR OPPORTUNITIES</span>
           </motion.div>
 
+          {/* FIX: Nama ditampilkan lengkap */}
           <motion.h1
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-6xl md:text-7xl lg:text-8xl font-black leading-tight"
+            className="text-5xl md:text-6xl lg:text-7xl font-black leading-tight"
           >
             <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">
-              {settings.name.split(" ")[0]}
+              {firstName}
             </span>{" "}
             <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-              {settings.name.split(" ")[1] || "Wahyu"}
+              {restName}
             </span>
           </motion.h1>
 
@@ -154,22 +158,22 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 1 }}
             className="flex gap-5 mt-10 flex-wrap"
           >
-            <motion.button 
+            <motion.button
               whileHover={{ scale: 1.05, y: -3 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}
-              className="relative overflow-hidden group bg-gradient-to-r from-purple-500 to-cyan-500 px-8 py-4 rounded-2xl font-bold shadow-lg shadow-purple-500/30 cursor-pointer"
+              className="bg-gradient-to-r from-purple-500 to-cyan-500 px-8 py-4 rounded-2xl font-bold shadow-lg shadow-purple-500/30 cursor-pointer"
             >
-              <span className="relative z-10 flex items-center gap-2"> See My Projects →</span>
+              See My Projects →
             </motion.button>
-            
-            <motion.button 
+
+            <motion.button
               whileHover={{ scale: 1.05, y: -3 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
-              className="relative overflow-hidden group border border-white/20 px-8 py-4 rounded-2xl hover:bg-white/10 hover:border-purple-500/50 transition-all duration-300 cursor-pointer backdrop-blur-sm"
+              className="border border-white/20 px-8 py-4 rounded-2xl font-bold hover:bg-white/5 transition cursor-pointer"
             >
-              <span className="flex items-center gap-2">📬 Hire Me</span>
+              Contact Me
             </motion.button>
           </motion.div>
 
@@ -198,9 +202,8 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* Kanan - Foto Profil (tetap sama seperti sebelumnya) */}
+        {/* Foto Profil */}
         <div className="relative flex justify-center items-center">
-          {/* ... kode foto profil tetap sama ... */}
           <div className="relative group" style={{ perspective: "1500px" }}>
             <motion.div
               animate={{ scale: [1, 1.3, 1], opacity: [0.2, 0.5, 0.2] }}
@@ -232,18 +235,12 @@ export default function Hero() {
             >
               <motion.div
                 animate={{ scale: [1, 1.05, 1], opacity: [0.3, 0.6, 0.3] }}
-                transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+                transition={{ repeat: Infinity, duration: 4 }}
                 className="absolute -bottom-10 left-1/2 transform -translate-x-1/2 w-[90%] h-5 bg-gradient-to-r from-purple-500/30 via-black/50 to-cyan-500/30 rounded-full blur-xl"
               />
-
               <motion.div
-                animate={{ boxShadow: [
-                  "0 0 20px rgba(168,85,247,0.3)",
-                  "0 0 50px rgba(168,85,247,0.5)",
-                  "0 0 30px rgba(6,182,212,0.4)",
-                  "0 0 20px rgba(168,85,247,0.3)",
-                ] }}
-                transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+                animate={{ boxShadow: ["0 0 20px rgba(168,85,247,0.3)", "0 0 50px rgba(168,85,247,0.5)", "0 0 30px rgba(6,182,212,0.4)", "0 0 20px rgba(168,85,247,0.3)"] }}
+                transition={{ repeat: Infinity, duration: 4 }}
                 className="rounded-full"
               >
                 <img
@@ -259,49 +256,20 @@ export default function Hero() {
                   onError={(e) => { e.target.src = "https://via.placeholder.com/380x380?text=Nur+Wahyu"; }}
                 />
               </motion.div>
-
               <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-white/15 via-transparent to-white/5 pointer-events-none" />
-
-              <motion.div
-                initial={{ scale: 0, rotate: -180 }}
-                animate={{ scale: 1, rotate: 0 }}
-                transition={{ delay: 1.2, type: "spring", stiffness: 200 }}
-                className="absolute -top-2 -right-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full p-2 shadow-lg z-20"
-                style={{ transform: "translateZ(25px)" }}
-              >
-                <div className="w-3 h-3 rounded-full bg-white" />
-              </motion.div>
-
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 1.5, type: "spring" }}
-                className="absolute -bottom-1 -left-1 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full p-1.5 border-2 border-white shadow-md z-20"
-                style={{ transform: "translateZ(20px)" }}
-              >
-                <motion.div
-                  animate={{ scale: [1, 1.3, 1] }}
-                  transition={{ repeat: Infinity, duration: 1.5 }}
-                  className="w-2 h-2 rounded-full bg-white"
-                />
-              </motion.div>
             </motion.div>
           </div>
 
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 1.4, duration: 0.6, type: "spring" }}
+            transition={{ delay: 1.4, type: "spring" }}
             whileHover={{ scale: 1.05 }}
             className="absolute -bottom-5 right-5 md:-bottom-10 md:right-10 bg-gradient-to-br from-purple-900/60 to-cyan-900/60 backdrop-blur-2xl border border-purple-500/40 rounded-2xl z-20 shadow-2xl overflow-hidden"
           >
-            <div className="relative px-5 py-3">
+            <div className="px-5 py-3">
               <div className="flex items-center gap-2 mb-1">
-                <motion.div 
-                  animate={{ scale: [1, 1.3, 1] }}
-                  transition={{ repeat: Infinity, duration: 1.5 }}
-                  className="w-2 h-2 rounded-full bg-green-400 shadow-lg shadow-green-400/50"
-                />
+                <motion.div animate={{ scale: [1, 1.3, 1] }} transition={{ repeat: Infinity, duration: 1.5 }} className="w-2 h-2 rounded-full bg-green-400 shadow-lg shadow-green-400/50" />
                 <span className="text-xs font-bold text-green-400 tracking-wider">OPEN FOR WORK</span>
               </div>
               <p className="text-sm text-white font-medium">🚀 Looking for my first client!</p>
